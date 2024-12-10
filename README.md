@@ -1,2 +1,3 @@
 # Admin-Men-JS-ALTV
-AltV Adminmenü in 
+AltV Adminmenü in JS geschrieben.
+
