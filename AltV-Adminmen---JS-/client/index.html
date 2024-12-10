@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Panel</title>
+    <style>
+        .admin-menu {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            color: white;
+            min-width: 300px;
+            border: 2px solid #4CAF50;
+        }
+
+        .menu-header {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+
+        .menu-section {
+            margin: 15px 0;
+        }
+
+        .menu-button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            background: #4CAF50;
+            border: none;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .menu-button:hover {
+            background: #45a049;
+            transform: scale(1.02);
+        }
+
+        .input-group {
+            margin: 10px 0;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid #4CAF50;
+            color: white;
+            border-radius: 3px;
+        }
+
+        .coord-inputs {
+            display: flex;
+            gap: 5px;
+        }
+
+        .coord-inputs input {
+            width: 33%;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-menu">
+        <div class="menu-header">Admin Panel</div>
+        
+        <div class="menu-section">
+            <div class="input-group">
+                <input type="text" id="playerInput" placeholder="Player ID">
+            </div>
+            
+            <button class="menu-button" onclick="teleportToPlayer()">Teleport to Player</button>
+            <button class="menu-button" onclick="kickPlayer()">Kick Player</button>
+            <button class="menu-button" onclick="banPlayer()">Ban Player</button>
+            <button class="menu-button" onclick="healPlayer()">Heal Player</button>
+        </div>
+
+        <div class="menu-section">
+            <div class="input-group">
+                <input type="text" id="vehicleInput" placeholder="Vehicle Model">
+            </div>
+            
+            <button class="menu-button" onclick="spawnVehicle()">Spawn Vehicle</button>
+            <button class="menu-button" onclick="repairVehicle()">Repair Vehicle</button>
+        </div>
+
+        <div class="menu-section">
+            <div class="input-group coord-inputs">
+                <input type="number" id="xCoord" placeholder="X">
+                <input type="number" id="yCoord" placeholder="Y">
+                <input type="number" id="zCoord" placeholder="Z">
+            </div>
+            <button class="menu-button" onclick="teleportToCoords()">Teleport to Coordinates</button>
+            <button class="menu-button" onclick="teleportToWaypoint()">Teleport to Waypoint</button>
+            <button class="menu-button" onclick="savePosition()">Save Current Position</button>
+        </div>
+
+        <div class="menu-section">
+            <button class="menu-button" onclick="toggleGodmode()">Toggle Godmode</button>
+            <button class="menu-button" onclick="toggleNoclip()">Toggle Noclip</button>
+        </div>
+    </div>
+
+    <script>
+        let godmodeEnabled = false;
+        let noclipEnabled = false;
+
+        function teleportToPlayer() {
+            const playerId = document.getElementById('playerInput').value;
+            alt.emit('admin:teleportToPlayer', playerId);
+        }
+
+        function kickPlayer() {
+            const playerId = document.getElementById('playerInput').value;
+            alt.emit('admin:kickPlayer', playerId);
+        }
+
+        function banPlayer() {
+            const playerId = document.getElementById('playerInput').value;
+            alt.emit('admin:banPlayer', playerId);
+        }
+
+        function healPlayer() {
+            const playerId = document.getElementById('playerInput').value;
+            alt.emit('admin:healPlayer', playerId);
+        }
+
+        function spawnVehicle() {
+            const vehicleModel = document.getElementById('vehicleInput').value;
+            alt.emit('admin:spawnVehicle', vehicleModel);
+        }
+
+        function repairVehicle() {
+            alt.emit('admin:repairVehicle');
+        }
+
+        function toggleGodmode() {
+            godmodeEnabled = !godmodeEnabled;
+            alt.emit('admin:toggleGodmode', godmodeEnabled);
+        }
+
+        function toggleNoclip() {
+            noclipEnabled = !noclipEnabled;
+            alt.emit('admin:toggleNoclip', noclipEnabled);
+        }
+
+        function teleportToCoords() {
+            const x = parseFloat(document.getElementById('xCoord').value);
+            const y = parseFloat(document.getElementById('yCoord').value);
+            const z = parseFloat(document.getElementById('zCoord').value);
+            alt.emit('admin:teleportToCoords', { x, y, z });
+        }
+
+        function teleportToWaypoint() {
+            alt.emit('admin:teleportToWaypoint');
+        }
+
+        function savePosition() {
+            alt.emit('admin:savePosition');
+        }
+
+        if (typeof alt !== 'undefined') {
+            alt.on('admin:updatePosition', (pos) => {
+                document.getElementById('xCoord').value = pos.x.toFixed(2);
+                document.getElementById('yCoord').value = pos.y.toFixed(2);
+                document.getElementById('zCoord').value = pos.z.toFixed(2);
+            });
+        }
+    </script>
+</body>
+</html>
